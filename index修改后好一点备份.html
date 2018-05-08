@@ -1,0 +1,521 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="keywords" content="关键词1,关键词2,关键词3" />
+    <meta name="description" content="对网站的描述" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--自动将网页中的电话号码显示为拨号的超链接-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <!--width宽度height高度，initial-scale初始的缩放比例，minimum-scale允许缩放到的最小比例，maximum-scale允许缩放到的最大比例，user-scalable是否可以手动缩放-->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!--IOS设备-->
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <!--IOS设备-->
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <title>标题</title>
+    <link type="text/css" rel="stylesheet" href="css/iconfont.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <link type="text/css" rel="stylesheet" href="css/index.css" />
+    <link type="text/css" rel="stylesheet" href="css/mescroll.min.css" />
+    <script type="text/javascript" src="script/fontSize.js"></script>
+    <!-- <script type="text/javascript" src="script/wx.js"></script>     -->
+    <script type="text/javascript" src="script/jquery-1.8.3.min.js"></script>    
+
+</head>
+<body>
+        
+        <section class="pro-content" >
+                <h1>{{test}}</h1>
+                <section class="topBox">
+                        <header :class="['y-flex y-jc y-ac',searchSeen?'':'rpad10']">
+                            <!-- <div class="w70 text-c iconfont icon-zuox fz33" onclick="javascript:history.back()"></div>
+                            <div class="w70 text-c iconfont icon-zuox fz33 hideBackBtn" v-if="backSeen" @click="backIndex"></div> -->
+                            <div class="backBtn" onclick="javascript:history.back()"></div>
+                            <div class="backBtn hideBackBtn" v-if="backSeen" @click="backIndex"></div>
+                            <div class="seach-bar y-flex">
+                                <p class="iconfont icon-shousuo fz33 c999 w50 lh60"></p>
+                                <input type="text" placeholder="搜索商品" v-model="keyword"/>
+                            </div>
+                            <div class="w100 text-c y-flex y-jc fz28" @click="searchTap" v-if="searchSeen">
+                                搜索
+                            </div>
+                            <!-- <div class="w175 text-c y-flex y-jc">
+                                <a href="#" class="fz28 c000">分享</a>
+                            </div> -->
+                        </header>
+                        <section class="top-box" v-if="topSeen">
+                            <h1>赚钱如此简单</h1>
+                            <h2>— 精选好物 给你好赚 —</h2>
+                            <div class="top3">
+                                本月赚钱小能手TOP<span class="fNum">3</span>（元）
+                            </div>
+                            <section class="y-flex lrpad35">
+                                <div class="flex1" v-for="(topUser,index) in topU">
+                                    <div class="user-img">
+                                        <img :src="[topUser.headimg+'?x-oss-process=image/resize,w_200']"/>
+                                        <div :class="['ranking',index==0?'type1':'',index==1?'type2':'',index==2?'type3':'','fNum']" >NO.{{index+1}}</div>
+                                    </div>
+                                    <p class="user-name">{{topUser.name}}</p>
+                                    <div class="earn">赚<span class="fNum">{{topUser.allProfit}}</span></div>
+                                </div>
+                            </section>
+                        </section>
+                    </section>
+
+            <section :class="['tab-bar y-flex',isFixed?'fixed':'']" v-if="topSeen">
+                <div class="sort">
+                    <div class="sort-select" v-on:click="sortShow">
+                        <p class="fl rmar5">{{sortSelect}}</p>
+                        <span :class="[isRise?'icon-shouqijiantouxiao':'icon-xialajiantouxiao','fl iconfont fz33']"></span>
+                    </div>
+                    <ul class="sort-slide" v-if="sortSeen">
+                        <li v-for="(sort,index) in sortName" :class="{cur:sort.isActive}" @click="sortSwitch(index)" >
+                            {{sort.name}}
+                        </li>
+                    </ul>
+                </div>
+                <!-- 选项卡 -->
+                <ul class="tab-nav flex1">
+                        <li v-for="(tab,index) in tabsName" v-bind:class="{active:tab.isActive}" @click="tabSwitch(index)" :data-id="tab.id">
+                            {{tab.name}}
+                        </li>
+                </ul>
+            </section>
+            <section class="empty-dom" v-if="isFixed"></section>
+            <!-- 产品列表 -->
+            <ul class="pro-list">
+                <li v-for="item in pdlist">
+                    <div class="pro-img">
+                        <img :src="[item.goods_image+'?x-oss-process=image/resize,w_200']" />
+                     </div>
+                    <div class="flex1">
+                        <a href="#" class="pro-name">{{item.goods_name}}</a>
+                        <div class="pro-price">
+                            <p class="fNum">￥{{item.goods_price}}</p>
+                            <p class="fNum">￥{{item.market_price}}</p>
+                        </div>
+                        <div class="y-flex y-jc-b y-ac-fe">
+                            <div class="ce71a41">赚
+                                <b class="fNum">￥</b>
+                                <b class="fz40 fNum">{{item.commission_money}}</b>
+                            </div>
+                            <a :href="['/Goods/shareGoodGoodsDetail.html?id='+item.id]" class="share-btn">
+                                <p class="iconfont icon-fenxiang fz28 rmar15"></p>
+                                <p>分享赚钱</p>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+
+                <li v-if="goodsEmpty">对不起，没找到相关结果，请再试</li>
+            </ul>
+
+            <section class="fix-footer">
+                    <div>累计收益：
+                        <b class="fz64 fNum">{{allProfit}}</b>元
+                    </div>
+                    <a href="#" class="earn-details">收益明细></a>
+                </section>
+        </section>
+        
+        <script type="text/javascript" src="script/vue.min.js"></script> 
+        <script type="text/javascript" src="script/axios.js"></script> 
+        <script type="text/javascript" src="script/mescroll.min.js"></script>  
+        <script>
+            var app = new Vue({
+                    el: ".pro-content",
+                    data: {
+                        test:"测试",
+                        scrollTop:0,
+                        goodsEmpty:false,
+                        searchSeen:false,
+                        backSeen:false,
+                        topSeen:true,
+                        keyword:"",
+                        sortType:"default",
+                        orderType:2,
+                        pdType:1,
+                        pageNum:1,
+                        isFixed:false,
+                        mescroll: null,
+                        pdlist: [],
+                        sortSelect: "综合排序",
+                        sortSeen: false,
+                        isRise:false,
+                        selectIndex:0,
+                        topU:"",
+                        sortName: [{
+                            name: "综合排序",
+                            isActive: true,
+                            sortType:"default"
+                        }, {
+                            name: "佣金排序",
+                            isActive: false,
+                            sortType:"commission",               
+                        }, {
+                            name: "销量排序",
+                            isActive: false,
+                            sortType:"sales",                
+                        }, {
+                            name: "价格排序",
+                            isActive: false,
+                            sortType:"price",                 
+                        }],
+                        tabsName:"",
+                        allProfit:"",
+                        goodsList:""
+                        
+                    },
+                    watch:{
+                        //判断搜索框是否为空
+                        keyword:function(){
+                            if(this.keyword!=""){
+                                this.searchSeen=true;
+                            }else{
+                                this.searchSeen=false;
+                            }
+                        }
+                    },
+                    methods: {
+                        //点击搜索
+                        searchTap:function(){
+                            console.log(this.keyword)
+                            if(this.keyword!=""){
+                                this.topSeen=false;
+                                this.backSeen=true;
+                                var page1={
+                                    num:1,
+                                    size:10
+                                }
+                                this.upCallback(page1);
+                            }
+                        },
+                        //搜索页面返回
+                        backIndex:function(){
+                            if(this.goodsEmpty){
+                                location.reload();
+                             }else{
+                                this.backSeen=false;
+                                this.topSeen=true;
+                             }
+                        },
+                        // 滚动方法
+                        handleScroll:function() {
+                            var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+                            var topH=document.getElementsByClassName("topBox")[0].offsetHeight;
+                            this.scrollTop=scrollTop;
+                            if(scrollTop>=topH){
+                                this.isFixed=true;
+                            }else{
+                                this.isFixed=false;
+                            }
+                        },
+                        // 排序点击
+                        sortShow: function () {
+                            this.sortSeen ? this.sortSeen = false : this.sortSeen = true;
+                        },
+                        sortSwitch: function (sortIndex) {
+                            var sortLi = document.querySelectorAll(".sort-slide>li"),
+                                len = sortLi.length;
+                            for (var i = 0; i < len; i++) {
+                                this.sortName[i].isActive = false;
+                            }
+                            this.sortName[sortIndex].isActive = true;
+                            this.sortSeen = false;
+                            this.sortSelect = this.sortName[sortIndex].name;
+                            this.sortType=this.sortName[sortIndex].sortType;
+                            //点击升降序
+                            if(this.selectIndex==sortIndex){
+                                this.isRise=!this.isRise;
+                                if(this.orderType=="2"){
+                                    this.orderType="1";
+                                }else{
+                                    this.orderType="2";
+                                }
+                            }else{
+                                this.selectIndex=sortIndex;
+                                this.isRise=false;
+                                this.orderType="2";
+                            }
+                            //点击分类页面即回到制定位置
+                            tapToTop();
+                            var page1={
+                                num:1,
+                                size:10
+                            }
+                            this.upCallback(page1);
+                        },
+                        // 选项卡
+                        tabSwitch: function (tabIndex) {
+                            var tabCards = document.querySelectorAll(".tab-nav>li");
+                            var len = tabCards.length;
+                            for (var i = 0; i < len; i++) {
+                                this.tabsName[i].isActive = false;
+                            }
+                            this.tabsName[tabIndex].isActive = true;
+                            this.pdType=this.tabsName[tabIndex].id;
+                            
+                            //点击分类页面即回到制定位置
+                            tapToTop(this.scrollTop);
+                            //假参数 调起函数入口
+                            var page1={
+                                num:1,
+                                size:10
+                            }
+                            this.upCallback(page1);
+                        },
+                        
+                        upCallback: function(page) {//联网加载数据
+                            var self = this;
+                            getListDataFromNet(page.num, page.size,function(curPageData) {
+                                //curPageData=[]; //打开本行注释,可演示列表无任何数据empty的配置
+                                
+                                //如果是第一页需手动制空列表 (代替clearId和clearEmptyId的配置)
+                                if(page.num == 1) self.pdlist = [];
+                                //更新列表数据
+                                self.pdlist = self.pdlist.concat(curPageData.list);
+                                // console.log(curPageData)
+                                //联网成功的回调,隐藏下拉刷新和上拉加载的状态;
+                                //mescroll会根据传的参数,自动判断列表如果无任何数据,则提示空;列表无下一页数据,则提示无更多数据;
+                                console.log("page.num="+page.num+", page.size="+page.size+", curPageData.list.length="+curPageData.list.length+", self.pdlist.length==" + self.pdlist.length);
+                                //方法一(推荐): 后台接口有返回列表的总页数 totalPage
+                                // self.mescroll.endByPage(curPageData.length, totalPage); //必传参数(当前页的数据个数, 总页数)
+                                // self.mescroll.endByPage(totalList,totalPage);
+                                self.mescroll.endByPage(curPageData.totalList,curPageData.totalPage);
+                                //如果结果为空
+                                if(curPageData.list==""){
+                                    self.goodsEmpty=true;
+                                }
+                               
+                                //方法二(推荐): 后台接口有返回列表的总数据量 totalSize
+                                //self.mescroll.endBySize(curPageData.length, totalSize); //必传参数(当前页的数据个数, 总数据量)
+                                
+                                //方法三(推荐): 您有其他方式知道是否有下一页 hasNext
+                                //self.mescroll.endSuccess(curPageData.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
+                                
+                                //方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
+                                // self.mescroll.endSuccess(curPageData.length);
+                                
+                            }, function() {
+                                //联网失败的回调,隐藏下拉刷新和上拉加载的状态;
+                                self.mescroll.endErr();
+                            },this.pdType,this.sortType,this.orderType,this.keyword);
+                        }
+
+
+                        
+                    },
+                    mounted() {
+                        //分类
+                        axios.get("shareGoodsListPage1.txt")
+                            // .then(res=>{ 
+                            //     var tabsLen=res.data.data.category_list.length;
+                            //     var tabsArr=[];
+                            //      for(var i=0;i<tabsLen;i++){
+                            //         var tabItem=new Object();
+                            //         tabItem.name=res.data.data.category_list[i].category_name;
+                            //         tabItem.id=res.data.data.category_list[i].category_id;
+                            //         i==0?tabItem.isActive=true:tabItem.isActive=false;
+                            //         tabsArr[i]=tabItem;
+                            //     }
+                            //     this.tabsName=tabsArr;
+                            // })
+                            .then(function(res){
+                                var tabsLen=res.data.data.category_list.length;
+                                var tabsArr=[];
+                                 for(var i=0;i<tabsLen;i++){
+                                    var tabItem=new Object();
+                                    tabItem.name=res.data.data.category_list[i].category_name;
+                                    tabItem.id=res.data.data.category_list[i].category_id;
+                                    i==0?tabItem.isActive=true:tabItem.isActive=false;
+                                    tabsArr[i]=tabItem;
+                                }
+                                this.tabsName=tabsArr;
+                            })
+
+                        //前三
+                        axios.get("月度排行.txt")
+                        //     .then(res=>{
+                        //         var topArr=[];
+                        //         for(var i=0;i<3;i++){
+                        //             var topItem=new Object();
+                        //             topItem.name=res.data.data[i].nickname;
+                        //             topItem.headimg=res.data.data[i].headimgurl;
+                        //             topItem.allProfit=res.data.data[i].all_profit;
+                        //             topArr[i]=topItem;
+                        //         }
+                        //         this.topU=topArr;
+                        // })
+                        .then(function(res){
+                            var topArr=[];
+                                for(var i=0;i<3;i++){
+                                    var topItem=new Object();
+                                    topItem.name=res.data.data[i].nickname;
+                                    topItem.headimg=res.data.data[i].headimgurl;
+                                    topItem.allProfit=res.data.data[i].all_profit;
+                                    topArr[i]=topItem;
+                                }
+                                this.topU=topArr;
+                        })
+                        //总收益
+                        axios.get("总收益.txt")
+                        //     .then(res=>{
+                        //         this.allProfit=res.data.data.all_profit;
+                        // })
+                        .then(function(res){
+                                this.allProfit=res.data.data.all_profit;
+                        })
+
+                        //滚动事件
+                        window.addEventListener('scroll', this.handleScroll);
+
+                        
+                        //创建MeScroll对象,down可以不用配置,因为内部已默认开启下拉刷新,重置列表数据为第一页
+                        //解析: 下拉回调默认调用mescroll.resetUpScroll(); 而resetUpScroll会将page.num=1,再执行up.callback,从而实现刷新列表数据为第一页;
+                        var self = this;
+                        self.mescroll = new MeScroll("body", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
+                            down:{
+
+                            },
+                            up: {
+                                callback: self.upCallback, //上拉回调
+                                //以下参数可删除,不配置
+                                isBounce: false, //此处禁止ios回弹,解析(务必认真阅读,特别是最后一点): http://www.mescroll.com/qa.html#q10
+                                //page:{size:8}, //可配置每页8条数据,默认10
+                                toTop:{ //配置回到顶部按钮
+                                    // src : "../res/img/mescroll-totop.png", //默认滚动到1000px显示,可配置offset修改
+                                    //html: null, //html标签内容,默认null; 如果同时设置了src,则优先取src
+                                    //offset : 1000
+                                },
+                                empty:{ //配置列表无任何数据的提示
+                                    warpId:"dataList",
+                                    icon : "../res/img/mescroll-empty.png" , 
+        						  	// tip : "亲,暂无相关数据哦~" , 
+        //						  	btntext : "去逛逛 >" , 
+        //						  	btnClick : function() {
+        //						  		alert("点击了去逛逛按钮");
+        //						  	} 
+                                },
+                                hardwareClass:"mescroll-hardware",
+                                //vue的案例请勿配置clearId和clearEmptyId,否则列表的数据模板会被清空
+                                //vue的案例请勿配置clearId和clearEmptyId,否则列表的数据模板会被清空
+        //						clearId: "dataList",
+        //						clearEmptyId: "dataList"
+                            }
+                        });
+
+
+                        
+
+
+                    },
+        
+                })
+                
+
+
+
+            
+
+
+
+                //jquery分类
+     //            var pdType="";
+     //            $(".tab-nav").on("click","li",function(){
+     //                pdType=$(this).attr("data-id");
+     //                getListDataFromNet(); 
+     //                //重置列表数据
+					// mescroll.resetUpScroll();
+					// //隐藏回到顶部按钮
+					// mescroll.hideTopBtn();
+     //            })
+                /*联网加载列表数据
+                请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
+                实际项目以您服务器接口返回的数据为准,无需本地处理分页.
+                * */
+
+
+
+                
+
+                var listData=new Object();//模拟分页数据
+                listData.list=[];
+                function getListDataFromNet(pageNum,pageSize,successCallback,errorCallback,pdTypeId,sortType,orderType,keyword) {
+                    var url;
+                    var txt;
+                    // 联网方法
+                    // if(keyword==""){
+                    //     if(pdTypeId=="1"){
+                    //         url="http://127.0.0.1:1719/goods_list?"+sortType+"="+orderType;
+                    //     }else{
+                    //         url="http://127.0.0.1:1719/goods_list?category_id="+pdTypeId+"&"+sortType+"="+orderType;
+                    //     }
+                    // }else{
+                    //     url="http://127.0.0.1:1719/goods_list?keyword="+keyword;
+                    // }
+                    
+                    //直接连网
+                    // if(keyword==""){
+                    //     if(pdTypeId=="1"){
+                    //         url="http://h5.honglaba.com/Goods/getShareGoodsList?"+sortType+"="+orderType;
+                    //     }else{
+                    //         url="http://h5.honglaba.com/Goods/getShareGoodsList?category_id="+pdTypeId+"&"+sortType+"="+orderType;
+                    //     }
+                    // }else{
+                    //     url="http://h5.honglaba.com/Goods/getShareGoodsList?keyword="+keyword;
+                    // }
+                    
+                    
+                    //模拟联网方法
+                    if(pdTypeId=="1"){
+                        url="shareGoodsListPage1.txt";
+                        txt="http://127.0.0.1:1719/goods_list?default"+"="+orderType;
+                    }else{
+                        url="shareGoodsListPage"+pdTypeId+".txt";
+                        txt="http://127.0.0.1:1719/goods_list?category_id="+pdTypeId+"&"+sortType+"="+orderType;
+                    }
+                    
+                    console.log(url)
+                 	axios.get(url, {
+                 	// axios.get("shareGoodsListPage.txt", {                    
+        					params: {
+        						num: pageNum, //页码
+        						size: pageSize //每页长度
+        					}
+        				})
+        				.then(function(response) {
+                            var data=response.data.data.goods_list; // 模拟数据: ../res/pdlist1.js
+                            // console.log(data)
+                            listData.totalPage=response.data.data.count;
+                            listData.totalList=response.data.data.result_total;
+                            var temp=[];
+                            for (var i = 0; i < data.length; i++) {
+                                temp.push(data[i]);
+                            }
+                            listData.list=temp;
+                            // listData.list=[];
+                            // if(listData.list==""){
+                            // }
+                            
+                            // console.log("总页数"+listData.totalPage)
+                            successCallback&&successCallback(listData);//成功回调
+        				})
+        				.catch(function(error) {
+        					errorCallback&&errorCallback()//失败回调
+        				});
+                }
+                function tapToTop(top){
+                     //点击分类页面即回到制定位置
+                            var topH=document.getElementsByClassName("topBox")[0].offsetHeight;
+                            if(top>topH){
+                                window.scrollTo(0,topH);
+                            }
+                }
+
+                
+        </script>
+</body>
+</html>
